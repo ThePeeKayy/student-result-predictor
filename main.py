@@ -1,27 +1,34 @@
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import Ridge
-from sklearn.metrics import mean_squared_error
-import numpy as np
+from typing import Any, Text, Dict, List
+from rasa_sdk import Action, Tracker
+from rasa_sdk.executor import CollectingDispatcher
+import joblib
 
-# Load the dataset
-data = pd.read_csv('path_to_your_csv_file.csv')
+class PredictStudentResult(Action):
+    def name(self) -> Text:
+        return "action_predict_student_result"
 
-# Prepare the data
-X = data.drop('result_column_name', axis=1)  # Assuming 'result_column_name' is the column to predict
-y = data['result_column_name']
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        # Load the trained model
+        model = joblib.load('student_result_predictor.joblib')
 
-# Split the data into training and test sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        # Get the required inputs from the user's message
+        writing_score = tracker.latest_message['entities'][0]['writing_score']
+        reading_score = tracker.latest_message['entities'][0]['reading_score']
+        parental_education = tracker.latest_message['entities'][0]['parental_education']
 
-# Train the Ridge regression model
-model = Ridge(alpha=1.0)  # You can adjust the alpha parameter for regularization
-model.fit(X_train, y_train)
+        # Prepare the input data for prediction
+        input_data = pd.DataFrame({
+            'writing score': [writing_score],
+            'reading score': [reading_score],
+            'parental level of education_' + parental_education: [1]
+        })
 
-# Make predictions
-y_pred = model.predict(X_test)
+        # Make the prediction
+        predicted_score = model.predict(input_data)[0]
 
-# Evaluate the model
-mse = mean_squared_error(y_test, y_pred)
-rmse = np.sqrt(mse)
-print(f'Root Mean Squared Error: {rmse}')
+        # Send the predicted score as the bot's response
+        dispatcher.utter_message(text=f"Based on the given scores, the predicted math score is {predicted_score}.")
+
+        return []
