@@ -68,7 +68,7 @@ train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 
 # Training loop
-for epoch in range(100):
+for epoch in range(250):
     running_loss = 0.0
     for inputs, labels in train_loader:
         optimizer.zero_grad()
@@ -120,7 +120,9 @@ new_input_scaled = scaler.transform(new_input_encoded)
 new_input_tensor = torch.tensor(new_input_scaled, dtype=torch.float32)
 
 # Use the model to predict the math score
+model.load_state_dict(torch.load('student_result_predictor.pth'))
 model.eval()
+
 with torch.no_grad():
     predicted_math_score = model(new_input_tensor)
 
