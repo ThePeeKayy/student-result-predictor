@@ -1,19 +1,32 @@
-from pytorchmodel import Net
 import torch
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
-scaler = StandardScaler()
-new_data = [[70, 80, 'bachelor\'s degree'], [65, 75, 'master\'s degree']]
-filtered_data = pd.concat([new_data[['writing score', 'reading score']], pd.get_dummies(new_data['parental level of education'])])
-model = Net()
-model.load_state_dict(torch.load('student_result_predictor.pth'))
+import pickle
+from pytorchmodel import model
+# Load the trained scaler
+with open('scaler.pkl', 'rb') as f:
+    scaler = pickle.load(f)
+
+new_data = pd.read_csv('StudentsPerformance.csv')
+new_features = new_data.iloc[1]
+print (new_features)
+# Reorder and add missing columns to match the original data
+new_features_encoded = pd.concat([new_features[['writing score', 'reading score']], pd.get_dummies(new_features[['parental level of education', 
+                                                                                             'gender', 'race/ethnicity', 'lunch', 'test preparation course']])], axis=1)
+new_features_encoded.columns = new_features_encoded.columns.astype(str)
+
+new_num_features = new_features_encoded.shape[1]
+print("New number of features:", new_num_features)
+
+# Scale the features
+new_features_scaled = scaler.transform(new_features_encoded)  # Assuming `scaler` is your trained StandardScaler object
+new_features_tensor = torch.tensor(new_features_scaled, dtype=torch.float32)
+
+# Use the model to predict the math score
 model.eval()
-
-# Assuming 'new_data' is a DataFrame containing the new data
-X_new_scaled = scaler.transform(filtered_data)
-X_new_tensor = torch.tensor(X_new_scaled, dtype=torch.float32)
-
 with torch.no_grad():
-    outputs = model(X_new_tensor)
+    predicted_math_score = model(new_features_tensor)
 
-print(outputs)
+# The predicted math score will be a tensor, you can convert it to a float if needed
+predicted_math_score = predicted_math_score.item()
+
+print("Predicted Math Score:", predicted_math_score)
