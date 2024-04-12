@@ -4,10 +4,11 @@ import Image from "next/image";
 import SelectMenu from "./ui/SelectMenu";
 import { slideIn,staggerContainer,textVariant2,textContainer } from '@/utils/motion';
 import { FaGithub,FaArrowRight } from "react-icons/fa6";
+import { useState } from 'react';
 
 const LunchOption = [
-  { id: 1, name: 'Premium' },
-  { id: 2, name: 'Free/Reduced' },
+  { id: 1, name: 'standard' },
+  { id: 2, name: 'free/reduced' },
 
 ]
 
@@ -18,28 +19,62 @@ const TestOption = [
 ]
 
 const GenderOption = [
-  { id: 1, name: 'Male' },
-  { id: 2, name: 'Female' },
+  { id: 1, name: 'male' },
+  { id: 2, name: 'female' },
 
 ]
 const EducationOption = [
-  { id: 1, name: 'Wade Cooper' },
-  { id: 2, name: 'Arlene Mccoy' },
-  { id: 3, name: 'Devon Webb' },
-  { id: 4, name: 'Tom Cook' },
-  { id: 5, name: 'Tanya Fox' },
+  { id: 1, name: 'high school' },
+  { id: 2, name: 'bachelor\'s degree' },
+  { id: 3, name: 'master\'s degree' },
+  { id: 4, name: 'some high school' },
+  { id: 5, name: 'associate\'s degree' },
+  { id: 6, name: 'some college' },
 ]
 
 const RaceOption = [
-  { id: 1, name: 'Group A' },
-  { id: 2, name: 'Group B' },
-  { id: 3, name: 'Group C' },
-  { id: 4, name: 'Group D' },
+  { id: 1, name: 'group A' },
+  { id: 2, name: 'group B' },
+  { id: 3, name: 'group C' },
+  { id: 4, name: 'group D' },
 
 ]
 
 
 export default function Home() {
+    const [readingResult,setReadingResult] = useState(null)
+    const [writingResult,setWritingResult] = useState(null)
+    const [testOption,setTestOption] = useState('completed')
+    const [raceOption,setRaceOption] = useState('group A')
+    const [lunchOption,setLunchOption] = useState('standard')
+    const [genderOption,setGenderOption] = useState('male')
+    const [educationOption,setEducationOption] = useState('high school')
+    const [mathResult,setMathResult] = useState(null)
+    const handleSubmit = async () => {
+      console.log('hi'+readingResult,writingResult,testOption, raceOption,lunchOption,genderOption,educationOption)
+      const response = await fetch('http://127.0.0.1:8080/bot', {
+        method:'POST',
+        headers: {
+          'Content-type':'application/json'
+        },
+        body:JSON.stringify({
+          readingResult:readingResult,
+          writingResult:writingResult,
+          testOption:testOption,
+          raceOption:raceOption,
+          lunchOption:lunchOption,
+          genderOption:genderOption,
+          educationOption:educationOption,
+        })
+  
+      })
+
+      if (response.statusCode== 500) return;
+  
+      const data = await response.json();
+      setMathResult(data.mathResult)
+    }
+  
   return (
     <main 
     className="bg-gray-900 flex overflow-auto lg:overflow-hidden lg:h-[100vh] justify-center"
@@ -67,23 +102,15 @@ export default function Home() {
       </div>
         <p className='text-white px-16 text-lg text-justify font-sans'>Explore the future of education with our innovative math score prediction bot. Using cutting-edge technology, our bot analyzes reading and writing scores along with parental education levels to make precise predictions, helping students and educators alike excel.</p>
       <form className='gap-2 flex-col flex px-16'>
-        <div className='lg:flex-row lg:gap-x-3 flex-col flex'>
-          <div className='flex flex-col lg:w-[50%] w-full space-y-2'>
-            <SelectMenu title={'Education level'} options={EducationOption}/>
-            <SelectMenu title={'Gender'} options={GenderOption}/>
-            <SelectMenu title={'Test Prep'} options={TestOption}/>
-          </div>
-          <div className='flex flex-col lg:w-[50%] w-full space-y-2'> 
-            <SelectMenu title={'Race Group'} options={RaceOption}/>
-            <SelectMenu title={'Lunch Option'} options={LunchOption}/>
-          </div>
-        </div>
+        
         <input
           type="number"
           name="reading score"
           id="reading score"
           className="pl-2 mt-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           placeholder="Reading Score"
+          onChange={(e)=>setReadingResult(e.target.value)}
+          required
         />
         <input
           type="number"
@@ -91,12 +118,27 @@ export default function Home() {
           id="writing score"
           className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           placeholder="Writing score"
+          onChange={(e)=>setWritingResult(e.target.value)}
+          required
         />
-        
+        <div className='lg:flex-row lg:gap-x-3 flex-col flex'>
+          <div className='flex flex-col lg:w-[50%] w-full space-y-2'>
+            <SelectMenu setEducationOption={setEducationOption} title={'Education level'} options={EducationOption}/>
+            <SelectMenu setGenderOption={setGenderOption} title={'Gender'} options={GenderOption}/>
+            <SelectMenu setTestOption={setTestOption} title={'Test Prep'} options={TestOption}/>
+          </div>
+          <div className='flex flex-col lg:w-[50%] w-full space-y-2'> 
+            <SelectMenu setRaceOption={setRaceOption} title={'Race Group'} options={RaceOption}/>
+            <SelectMenu setLunchOption={setLunchOption} title={'Lunch Option'} options={LunchOption}/>
+            <div className='pt-8'>
+            <div onClick={()=>handleSubmit()} className='bg-black flex flex-row justify-between ring-inset ring-1 text-sm px-3 py-2 ring-gray-400 text-white rounded-md cursor-pointer'>Submit <div className='bg-white rounded-full justify-center items-center pt-[3px] px-1'><FaArrowRight color='black'/></div></div>
+            </div>
+          </div>
+        </div>
       </form>
       <div className='flex justify-center'>
         <div className='bg-white font-bold font-sans rounded-md w-[30vw] min-w-[100px] p-2 ring-[2px] ring-gray-500 shadow-xl'>
-          Expected Math Result:
+          Expected Math Result:{mathResult}
         </div>
       </div>
       <div className='flex flex-col items-center'>

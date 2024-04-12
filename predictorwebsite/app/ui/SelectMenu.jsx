@@ -9,11 +9,18 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function SelectMenu({options,title}) {
+export default function SelectMenu({options,title,setRaceOption,setLunchOption,setEducationOption,setTestOption,setGenderOption}) {
   const [selected, setSelected] = useState(options[0])
-
+  const handleChange = (option) => {
+    setSelected(option);
+    if (setRaceOption) setRaceOption(option.name);
+    if (setLunchOption) setLunchOption(option.name);
+    if (setEducationOption) setEducationOption(option.name);
+    if (setTestOption) setTestOption(option.name);
+    if (setGenderOption) setGenderOption(option.name);
+  };
   return (
-    <Listbox value={selected} onChange={setSelected}>
+    <Listbox value={selected} onChange={handleChange}>
       {({ open }) => (
         <>
           <Listbox.Label className="block text-sm font-sans leading-6 text-white">{title}</Listbox.Label>
