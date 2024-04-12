@@ -1,34 +1,76 @@
-from typing import Any, Text, Dict, List
-from rasa_sdk import Action, Tracker
-from rasa_sdk.executor import CollectingDispatcher
-import joblib
+import pandas as pd
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from torch.utils.data import TensorDataset, DataLoader
 
-class PredictStudentResult(Action):
-    def name(self) -> Text:
-        return "action_predict_student_result"
+# Load the dataset
+data_encoded = pd.read_csv('C:/Users/Dell/Documents/Student Project/student-result-predictor/StudentsPerformance.csv')
 
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        # Load the trained model
-        model = joblib.load('student_result_predictor.joblib')
+# Prepare the data
+X_numerical = data_encoded[['writing score', 'reading score']]
+X_categorical = pd.get_dummies(data_encoded['parental level of education'])
+X = pd.concat([X_numerical, X_categorical], axis=1)  # Concatenate numerical and one-hot encoded categorical features
+y = data_encoded['math score']
 
-        # Get the required inputs from the user's message
-        writing_score = tracker.latest_message['entities'][0]['writing_score']
-        reading_score = tracker.latest_message['entities'][0]['reading_score']
-        parental_education = tracker.latest_message['entities'][0]['parental_education']
+# Split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-        # Prepare the input data for prediction
-        input_data = pd.DataFrame({
-            'writing score': [writing_score],
-            'reading score': [reading_score],
-            'parental level of education_' + parental_education: [1]
-        })
+# Normalize features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
 
-        # Make the prediction
-        predicted_score = model.predict(input_data)[0]
+# Convert to PyTorch tensors
+X_train_tensor = torch.tensor(X_train_scaled, dtype=torch.float32)
+y_train_tensor = torch.tensor(y_train.values, dtype=torch.float32)
+X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32)
+y_test_tensor = torch.tensor(y_test.values, dtype=torch.float32)
 
-        # Send the predicted score as the bot's response
-        dispatcher.utter_message(text=f"Based on the given scores, the predicted math score is {predicted_score}.")
+# Define the neural network architecture
+class Net(nn.Module):
+    def __init__(self):
+        super(Net, self).__init__()
+        self.fc1 = nn.Linear(8, 128)
+        self.fc2 = nn.Linear(128, 64)
+        self.fc3 = nn.Linear(64, 1)
+    
+    def forward(self, x):
+        x = torch.relu(self.fc1(x))
+        x = torch.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x
 
-        return []
+# Create an instance of the neural network
+model = Net()
+
+# Define loss function and optimizer
+criterion = nn.MSELoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+# Define data loaders
+train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+
+# Training loop
+for epoch in range(50):
+    running_loss = 0.0
+    for inputs, labels in train_loader:
+        optimizer.zero_grad()
+        outputs = model(inputs)
+        loss = criterion(outputs, labels.unsqueeze(1))
+        loss.backward()
+        optimizer.step()
+        running_loss += loss.item()
+    print(f'Epoch {epoch+1}, Loss: {running_loss / len(train_loader)}')
+
+# Evaluate the model
+with torch.no_grad():
+    outputs = model(X_test_tensor)
+    mse = criterion(outputs, y_test_tensor.unsqueeze(1))
+    print(f'Mean Squared Error: {mse}')
+
+# Save the model
+torch.save(model.state_dict(), 'student_result_predictor.pth')
