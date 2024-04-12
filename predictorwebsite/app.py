@@ -75,4 +75,4 @@ def predict_math_score():
     return jsonify({'mathResult': predicted_math_score})
 
 if __name__ == '__main__':
-    app.run(port=8080)
+    app.run()
