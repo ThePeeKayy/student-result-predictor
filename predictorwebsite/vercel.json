@@ -1,7 +1,7 @@
 {
   "version": 2,
   "functions": {
-    "app/api/app.py": {
+    "app/api": {
       "runtime": "python@3.8.12",
       "memory": 1024
     }
