@@ -97,13 +97,13 @@ torch.save(model.state_dict(), 'student_result_predictor.pth')
 
 # Prepare the new single input
 new_input = pd.DataFrame({
-    'writing score': [67],  # Example writing score
-    'reading score': [64],  # Example reading score
-    'parental level of education': ['high school'],  # Example parental level of education
+    'writing score': [44],  # Example writing score
+    'reading score': [57],  # Example reading score
+    'parental level of education': ['associate\'s degree'],  # Example parental level of education
     'gender': ['male'],  # Example gender
-    'race/ethnicity': ['group D'],  # Example race/ethnicity
+    'race/ethnicity': ['group A'],  # Example race/ethnicity
     'lunch': ['free/reduced'],  # Example lunch
-    'test preparation course': ['completed']  # Example test preparation course
+    'test preparation course': ['none']  # Example test preparation course
 })
 # Encode the new input
 new_input_encoded = pd.get_dummies(new_input)

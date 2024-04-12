@@ -37,7 +37,7 @@ const RaceOption = [
   { id: 2, name: 'group B' },
   { id: 3, name: 'group C' },
   { id: 4, name: 'group D' },
-
+  { id: 5, name: 'group E' },
 ]
 
 
@@ -51,7 +51,6 @@ export default function Home() {
     const [educationOption,setEducationOption] = useState('high school')
     const [mathResult,setMathResult] = useState(null)
     const handleSubmit = async () => {
-      console.log('hi'+readingResult,writingResult,testOption, raceOption,lunchOption,genderOption,educationOption)
       const response = await fetch('http://127.0.0.1:8080/bot', {
         method:'POST',
         headers: {
@@ -138,12 +137,12 @@ export default function Home() {
       </form>
       <div className='flex justify-center'>
         <div className='bg-white font-bold font-sans rounded-md w-[30vw] min-w-[100px] p-2 ring-[2px] ring-gray-500 shadow-xl'>
-          Expected Math Result:{mathResult}
+          Expected Math Result: {mathResult ? mathResult.toFixed(1): null}
         </div>
       </div>
       <div className='flex flex-col items-center'>
-        <span className='flex flex-row text-gray-400'>Chun Yin <FaGithub size={20}/> </span>
-        <span className='flex flex-row text-gray-400'>PengKiang <FaGithub size={20}/></span>
+        <a href='https://github.com/iextremity' className='flex flex-row text-gray-400'>Chun Yin <FaGithub size={20}/> </a>
+        <a href='https://github.com/ThePeeKayy' className='flex flex-row text-gray-400'>PengKiang <FaGithub size={20}/></a>
         <a className='bg-white p-2 rounded-md mt-2 flex flex-row gap-x-2 font-[600px]' href='https://www.kaggle.com/datasets/spscientist/students-performance-in-exams'>Visit Dataset <div className='bg-gray-800 rounded-full justify-center items-center pt-1 px-1'><FaArrowRight color='white'/></div></a>
       </div>
       <motion.div

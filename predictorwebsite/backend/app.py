@@ -2,13 +2,13 @@ from flask import Flask, request, jsonify
 import pandas as pd
 import torch
 from torch import nn
-from sklearn.preprocessing import StandardScaler
 import pickle
 from flask_cors import CORS
 
 
 app = Flask(__name__)
 CORS(app)
+
 # Load the scaler
 with open('scaler.pkl', 'rb') as f:
     scaler = pickle.load(f)
@@ -18,7 +18,7 @@ class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.fc1 = nn.Linear(19, 512)
-        self.fc2 = nn.Linear(512,256)
+        self.fc2 = nn.Linear(512, 256)
         self.fc3 = nn.Linear(256, 64)
         self.fc4 = nn.Linear(64, 1)
     
@@ -31,8 +31,7 @@ class Net(nn.Module):
 
 # Create an instance of the neural network
 model = Net()
-model.load_state_dict(torch.load('student_result_predictor.pth'))
-model.eval()
+
 
 @app.route('/bot', methods=['POST'])
 def predict_math_score():
@@ -47,8 +46,8 @@ def predict_math_score():
     education_option = data.get('educationOption')
     # Prepare the new single input
     new_input = pd.DataFrame({
-        'writing score': [writing_score],
-        'reading score': [reading_score],
+        'writing score': [int(writing_score)],
+        'reading score': [int(reading_score)],
         'parental level of education': [education_option],
         'gender': [gender_option],
         'race/ethnicity': [race_option],
@@ -62,6 +61,9 @@ def predict_math_score():
     new_input_encoded = new_input_encoded.reindex(columns=original_columns, fill_value=0)
     new_input_scaled = scaler.transform(new_input_encoded)
     new_input_tensor = torch.tensor(new_input_scaled, dtype=torch.float32)
+
+    model.load_state_dict(torch.load('student_result_predictor.pth'))
+    model.eval()
 
     # Use the model to predict the math score
     with torch.no_grad():
