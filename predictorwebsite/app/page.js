@@ -51,7 +51,7 @@ export default function Home() {
     const [educationOption,setEducationOption] = useState('high school')
     const [mathResult,setMathResult] = useState(null)
     const handleSubmit = async () => {
-      const response = await fetch('https://student-result-predictor.vercel.app:8080/bot', {
+      const response = await fetch('peekay123.pythonanywhere.com/home/peekay123/mysite', {
         method:'POST',
         headers: {
           'Content-type':'application/json'
