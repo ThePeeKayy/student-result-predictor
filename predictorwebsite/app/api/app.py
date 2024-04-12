@@ -37,6 +37,7 @@ model = Net()
 def predict_math_score():
     # Get data from the request
     data = request.json
+    print(data)
     reading_score = data.get('readingResult')
     writing_score = data.get('writingResult')
     test_option = data.get('testOption')
