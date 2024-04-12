@@ -1,8 +1,8 @@
 {
     "version": 2,
-    "functions": { "api/app.py": { "runtime": "python3.9", "includeFiles": "api/**" } },
+    "functions": { "app.py": { "runtime": "python3.9", "includeFiles": "*.py" } },
     "routes": [
-      { "src": "/api/(.*)", "dest": "api/app.py" }
+      { "src": "/(.*)", "dest": "app.py" }
     ]
   }
   
