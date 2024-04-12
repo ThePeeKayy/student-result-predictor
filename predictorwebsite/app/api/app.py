@@ -33,7 +33,7 @@ class Net(nn.Module):
 model = Net()
 
 
-@app.route('/bot', methods=['POST'])
+@app.route('/', methods=['POST'])
 def predict_math_score():
     # Get data from the request
     data = request.json
