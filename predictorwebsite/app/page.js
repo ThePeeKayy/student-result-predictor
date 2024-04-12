@@ -51,7 +51,7 @@ export default function Home() {
     const [educationOption,setEducationOption] = useState('high school')
     const [mathResult,setMathResult] = useState(null)
     const handleSubmit = async () => {
-      const response = await fetch('https://peekay123.pythonanywhere.com:8080/bot', {
+      const response = await fetch('https://peekay123.pythonanywhere.com/bot', {
         method:'POST',
         headers: {
           'Content-type':'application/json'
