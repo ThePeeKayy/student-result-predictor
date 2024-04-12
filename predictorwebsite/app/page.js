@@ -141,8 +141,9 @@ export default function Home() {
         </div>
       </div>
       <div className='flex flex-col items-center'>
-        <a href='https://github.com/iextremity' className='flex flex-row text-gray-400'>Chun Yin <FaGithub size={20}/> </a>
         <a href='https://github.com/ThePeeKayy' className='flex flex-row text-gray-400'>PengKiang <FaGithub size={20}/></a>
+
+        <a href='https://github.com/iextremity' className='flex flex-row text-gray-400'>Chun Yin <FaGithub size={20}/> </a>
         <a className='bg-white p-2 rounded-md mt-2 flex flex-row gap-x-2 font-[600px]' href='https://www.kaggle.com/datasets/spscientist/students-performance-in-exams'>Visit Dataset <div className='bg-gray-800 rounded-full justify-center items-center pt-1 px-1'><FaArrowRight color='white'/></div></a>
       </div>
       <motion.div
