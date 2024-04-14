@@ -131,7 +131,7 @@ export default function Home() {
             <SelectMenu setRaceOption={setRaceOption} title={'Race Group'} options={RaceOption}/>
             <SelectMenu setLunchOption={setLunchOption} title={'Lunch Option'} options={LunchOption}/>
             <div className='pt-8'>
-            <div onClick={()=>handleSubmit()} className='bg-black flex flex-row justify-between ring-inset ring-1 text-sm px-3 py-2 ring-gray-400 text-white rounded-md cursor-pointer'>Submit <div className='bg-white rounded-full justify-center items-center pt-[3px] px-1'><FaArrowRight color='black'/></div></div>
+            <div onClick={(readingResult&& writingResult )? ()=>handleSubmit():()=>{}} className='bg-black flex flex-row justify-between ring-inset ring-1 text-sm px-3 py-2 ring-gray-400 text-white rounded-md cursor-pointer'>Submit <div className='bg-white rounded-full justify-center items-center pt-[3px] px-1'><FaArrowRight color='black'/></div></div>
             </div>
           </div>
         </div>
