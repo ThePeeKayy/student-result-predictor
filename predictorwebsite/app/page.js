@@ -136,7 +136,7 @@ export default function Home() {
         </div>
       </form>
       <div className='flex justify-center'>
-        <div className='bg-white font-bold font-sans rounded-md w-[30vw] min-w-[100px] p-2 ring-[2px] ring-gray-500 shadow-xl'>
+        <div className='bg-white text-black font-bold font-sans rounded-md w-[30vw] min-w-[100px] p-2 ring-[2px] ring-gray-500 shadow-xl'>
           Expected Math Result: {mathResult ? mathResult.toFixed(1): null}
         </div>
       </div>
