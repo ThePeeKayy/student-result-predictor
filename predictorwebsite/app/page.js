@@ -51,7 +51,7 @@ export default function Home() {
     const [educationOption,setEducationOption] = useState('high school')
     const [mathResult,setMathResult] = useState(null)
     const handleSubmit = async () => {
-      const response = await fetch('https://hub.ovh2.mybinder.org/user/thepeekayy-stud-esult-predictor-q1wbbnee/proxy/8080/', {
+      const response = await fetch('https://peekay123.pythonanywhere.com/', {
         method:'POST',
         headers: {
           'Content-type':'application/json'
