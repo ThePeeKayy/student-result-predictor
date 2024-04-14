@@ -51,7 +51,7 @@ export default function Home() {
     const [educationOption,setEducationOption] = useState('high school')
     const [mathResult,setMathResult] = useState(null)
     const handleSubmit = async () => {
-      const response = await fetch('https://student-result-predictor-1h2y.vercel.app/api/', {
+      const response = await fetch('https://hub.ovh2.mybinder.org/user/thepeekayy-stud-esult-predictor-q1wbbnee/proxy/8080/', {
         method:'POST',
         headers: {
           'Content-type':'application/json'
