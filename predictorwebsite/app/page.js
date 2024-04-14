@@ -89,15 +89,16 @@ export default function Home() {
         <Image className='hidden lg:block' width={90} height={50} src='/Our-story.png'/>
         <motion.p 
           variants={textContainer}
-          className={`font-bold flex flex-row flex-wrap text-transparent bg-gradient-to-r from-red-400 to-yellow-300 bg-clip-text text-[50px] `}
+          className={`font-bold flex flex-row flex-wrap text-transparent bg-gradient-to-r from-red-400 to-yellow-300 bg-clip-text text-[50px] 
+            whitespace-pre-wrap break-all`}
         >
-        {Array.from('Student Result Predictor').map((letter,i) => (
-          <motion.span variants ={textVariant2} className='flex flex-wrap whitespace-pre-wrap' key={i}>
-            {letter === ' '?'\u00A0' :letter}
-          </motion.span>
-        ))}
-        
-      </motion.p>
+          {Array.from('Student Result Predictor').map((letter, i) => (
+            <motion.span variants={textVariant2} className='flex flex-wrap whitespace-pre-wrap' key={i}>
+              {letter === ' ' ? '\u00A0' : letter}
+            </motion.span>
+          ))}
+        </motion.p>
+
       </div>
         <p className='text-white px-16 text-lg text-justify font-sans'>Explore the future of education with our innovative math score prediction bot. Using cutting-edge technology, our bot analyzes reading and writing scores along with parental education levels to make precise predictions, helping students and educators alike excel.</p>
       <form className='gap-2 flex-col flex px-16'>
@@ -144,7 +145,7 @@ export default function Home() {
         <a href='https://github.com/ThePeeKayy' className='flex flex-row text-gray-400'>PengKiang <FaGithub size={20}/></a>
 
         <a href='https://github.com/iextremity' className='flex flex-row text-gray-400'>Chun Yin <FaGithub size={20}/> </a>
-        <a className='bg-white p-2 rounded-md mt-2 flex flex-row gap-x-2 font-[600px]' href='https://www.kaggle.com/datasets/spscientist/students-performance-in-exams'>Visit Dataset <div className='bg-gray-800 rounded-full justify-center items-center pt-1 px-1'><FaArrowRight color='white'/></div></a>
+        <a className='bg-white text-black p-2 rounded-md mt-2 flex flex-row gap-x-2 font-[600px]' href='https://www.kaggle.com/datasets/spscientist/students-performance-in-exams'>Visit Dataset <div className='bg-gray-800 rounded-full justify-center items-center pt-1 px-1'><FaArrowRight color='white'/></div></a>
       </div>
       <motion.div
       variants={slideIn('right','tween',0.2,1)}
